@@ -89,10 +89,10 @@ extern crate rand;
 /// FFI routines.
 pub mod ffi;
 
-pub use ffi::apps::*;
-pub use ffi::ipc::*;
-pub use ffi::logging::*;
-pub use ffi::*;
+pub use crate::ffi::apps::*;
+pub use crate::ffi::ipc::*;
+pub use crate::ffi::logging::*;
+pub use crate::ffi::*;
 
 mod access_container;
 mod app_auth;
@@ -112,7 +112,7 @@ pub mod test_utils;
 mod tests;
 
 pub use self::errors::AuthError;
-pub use client::AuthClient;
+pub use crate::client::AuthClient;
 
 use futures::stream::Stream;
 use futures::sync::mpsc;

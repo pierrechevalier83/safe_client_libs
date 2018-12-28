@@ -11,7 +11,7 @@ use routing::Client as Routing;
 #[cfg(feature = "use-mock-routing")]
 use safe_core::MockRouting as Routing;
 
-use errors::AuthError;
+use crate::errors::AuthError;
 use futures::Future;
 use lru_cache::LruCache;
 use maidsafe_utilities::serialisation::{deserialise, serialise};
@@ -36,8 +36,8 @@ use std::rc::Rc;
 use std::time::Duration;
 use tiny_keccak::sha3_256;
 use tokio_core::reactor::Handle;
-use AuthFuture;
-use AuthMsgTx;
+use crate::AuthFuture;
+use crate::AuthMsgTx;
 
 /// Client object used by safe_authenticator.
 pub struct AuthClient {
@@ -565,7 +565,7 @@ mod tests {
     use safe_core::utils::test_utils::{finish, setup_client};
     use safe_core::{utils, CoreError, DIR_TAG};
     use tokio_core::reactor::Core;
-    use AuthMsgTx;
+    use crate::AuthMsgTx;
 
     // Test account creation.
     // It should succeed the first time and fail the second time with the same secrets.
