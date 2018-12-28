@@ -35,6 +35,7 @@ pub struct Writer<C: Client> {
 
 impl<C: Client> Writer<C> {
     /// Create new instance of Writer
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(
         client: &C,
         storage: SelfEncryptionStorage<C>,
@@ -51,12 +52,14 @@ impl<C: Client> Writer<C> {
         let client = client.clone();
         fut.and_then(move |data_map| {
             SequentialEncryptor::new(storage, data_map).map_err(From::from)
-        }).map(move |self_encryptor| Writer {
+        })
+        .map(move |self_encryptor| Writer {
             client,
             file,
             self_encryptor,
             encryption_key,
-        }).map_err(From::from)
+        })
+        .map_err(From::from)
         .into_box()
     }
 
@@ -92,6 +95,7 @@ impl<C: Client> Writer<C> {
                 file.set_modified_time(Utc::now());
                 file.set_size(size);
                 file
-            }).into_box()
+            })
+            .into_box()
     }
 }

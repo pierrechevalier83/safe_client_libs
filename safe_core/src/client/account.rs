@@ -33,6 +33,7 @@ pub struct Account {
 
 impl Account {
     /// Create new Account with a provided set of keys.
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(maid_keys: ClientKeys) -> Result<Self, CoreError> {
         Ok(Account {
             maid_keys,
@@ -104,7 +105,8 @@ impl Account {
             &salt,
             pwhash::OPSLIMIT_INTERACTIVE,
             pwhash::MEMLIMIT_INTERACTIVE,
-        ).map(|_| ())
+        )
+        .map(|_| ())
         .map_err(|_| CoreError::UnsuccessfulPwHash)
     }
 }

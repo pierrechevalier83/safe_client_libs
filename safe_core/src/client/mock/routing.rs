@@ -6,7 +6,7 @@
 // KIND, either express or implied. Please review the Licences for the specific language governing
 // permissions and limitations relating to use of the SAFE Network Software.
 
-#![cfg_attr(feature="cargo-clippy", allow(needless_pass_by_value))]
+#![allow(clippy::needless_pass_by_value)]
 
 use super::vault::{self, Data, Vault, VaultGuard};
 use super::DataId;
@@ -94,6 +94,7 @@ pub struct Routing {
 impl Routing {
     /// Initialises mock routing.
     /// The function signature mirrors `routing::Client`.
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(
         sender: Sender<Event>,
         id: Option<FullId>,
@@ -206,7 +207,8 @@ impl Routing {
                             Ok(())
                         }
                     }
-                }).map(|_| vault.commit_mutation(&dst))
+                })
+                .map(|_| vault.commit_mutation(&dst))
         };
 
         self.send_response(
@@ -313,7 +315,8 @@ impl Routing {
                             vault.insert_data(data_name, Data::Mutable(data));
                             Ok(())
                         }
-                    }).map(|_| vault.commit_mutation(&dst))
+                    })
+                    .map(|_| vault.commit_mutation(&dst))
             }
         };
 

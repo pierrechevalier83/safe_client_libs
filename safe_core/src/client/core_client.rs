@@ -77,6 +77,7 @@ pub struct CoreClient {
 
 impl CoreClient {
     /// This will create a basic Client object which is sufficient only for testing purposes.
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(
         acc_locator: &str,
         acc_password: &str,

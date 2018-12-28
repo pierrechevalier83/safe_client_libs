@@ -11,7 +11,7 @@
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png",
     html_favicon_url = "http://maidsafe.net/img/favicon.ico",
-    test(attr(forbid(warnings))),
+    test(attr(forbid(warnings)))
 )]
 // For explanation of lint checks, run `rustc -W help` or see
 // https://github.com/maidsafe/QA/blob/master/Documentation/Rust%20Lint%20Checks.md
@@ -30,8 +30,6 @@
     non_shorthand_field_patterns,
     overflowing_literals,
     plugin_as_library,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
     stable_features,
     unconditional_recursion,
     unknown_lints,
@@ -59,12 +57,7 @@
 )]
 #![cfg_attr(
     feature = "cargo-clippy",
-    deny(
-        clippy,
-        unicode_not_nfc,
-        wrong_pub_self_convention,
-        option_unwrap_used
-    )
+    deny(clippy, unicode_not_nfc, wrong_pub_self_convention, option_unwrap_used)
 )]
 #![cfg_attr(
     feature = "cargo-clippy",
@@ -214,13 +207,14 @@ impl Authenticator {
                         disconnect_notifier();
                     }
                     ok!(())
-                }).for_each(|_| Ok(()));
+                })
+                .for_each(|_| Ok(()));
             el_h.spawn(net_obs_fut);
 
             let client = try_tx!(create_client_fn(el_h, core_tx.clone(), net_tx), tx);
 
-            unwrap!(core_tx.unbounded_send(CoreMsg::new(move |client, &()| {
-                std_dirs::create(client)
+            unwrap!(
+                core_tx.unbounded_send(CoreMsg::new(move |client, &()| std_dirs::create(client)
                     .map_err(|error| AuthError::AccountContainersCreation(error.to_string()))
                     .then(move |res| {
                         match res {
@@ -229,9 +223,10 @@ impl Authenticator {
                         }
 
                         Ok(())
-                    }).into_box()
-                    .into()
-            })));
+                    })
+                    .into_box()
+                    .into()))
+            );
 
             event_loop::run(el, &client, &(), core_rx);
         });
@@ -280,47 +275,51 @@ impl Authenticator {
     {
         let (tx, rx) = sync_channel(0);
 
-        let joiner = thread::named("Core Event Loop", move || {
-            let el = try_tx!(Core::new(), tx);
-            let el_h = el.handle();
+        let joiner =
+            thread::named("Core Event Loop", move || {
+                let el = try_tx!(Core::new(), tx);
+                let el_h = el.handle();
 
-            let (core_tx, core_rx) = mpsc::unbounded();
-            let (net_tx, net_rx) = mpsc::unbounded::<NetworkEvent>();
-            let core_tx_clone = core_tx.clone();
+                let (core_tx, core_rx) = mpsc::unbounded();
+                let (net_tx, net_rx) = mpsc::unbounded::<NetworkEvent>();
+                let core_tx_clone = core_tx.clone();
 
-            let net_obs_fut = net_rx
-                .then(move |net_event| {
-                    if let Ok(NetworkEvent::Disconnected) = net_event {
-                        disconnect_notifier();
-                    }
-                    ok!(())
-                }).for_each(|_| Ok(()));
-            el_h.spawn(net_obs_fut);
+                let net_obs_fut = net_rx
+                    .then(move |net_event| {
+                        if let Ok(NetworkEvent::Disconnected) = net_event {
+                            disconnect_notifier();
+                        }
+                        ok!(())
+                    })
+                    .for_each(|_| Ok(()));
+                el_h.spawn(net_obs_fut);
 
-            let client = try_tx!(create_client_fn(el_h, core_tx_clone, net_tx), tx);
+                let client = try_tx!(create_client_fn(el_h, core_tx_clone, net_tx), tx);
 
-            if !client.std_dirs_created() {
-                // Standard directories haven't been created during
-                // the user account registration - retry it again.
-                let tx2 = tx.clone();
-                let core_tx2 = core_tx.clone();
-                let core_tx3 = core_tx.clone();
+                if !client.std_dirs_created() {
+                    // Standard directories haven't been created during
+                    // the user account registration - retry it again.
+                    let tx2 = tx.clone();
+                    let core_tx2 = core_tx.clone();
+                    let core_tx3 = core_tx.clone();
 
-                unwrap!(core_tx.unbounded_send(CoreMsg::new(move |client, &()| {
-                    std_dirs::create(client)
-                        .map(move |()| {
-                            unwrap!(tx.send(Ok(core_tx2)));
-                        }).map_err(move |e| {
-                            unwrap!(tx2.send(Err((Some(core_tx3), e))));
-                        }).into_box()
-                        .into()
-                })));
-            } else {
-                unwrap!(tx.send(Ok(core_tx)));
-            }
+                    unwrap!(core_tx.unbounded_send(CoreMsg::new(move |client, &()| {
+                        std_dirs::create(client)
+                            .map(move |()| {
+                                unwrap!(tx.send(Ok(core_tx2)));
+                            })
+                            .map_err(move |e| {
+                                unwrap!(tx2.send(Err((Some(core_tx3), e))));
+                            })
+                            .into_box()
+                            .into()
+                    })));
+                } else {
+                    unwrap!(tx.send(Ok(core_tx)));
+                }
 
-            event_loop::run(el, &client, &(), core_rx);
-        });
+                event_loop::run(el, &client, &(), core_rx);
+            });
 
         let core_tx = match rx.recv()? {
             Ok(core_tx) => core_tx,

@@ -24,6 +24,7 @@ pub struct Reader<C: Client> {
 
 impl<C: Client> Reader<C> {
     /// Create a new instance of Reader.
+    #[allow(clippy::new_ret_no_self)]
     pub fn new(
         client: C,
         storage: SelfEncryptionStorage<C>,
@@ -38,7 +39,8 @@ impl<C: Client> Reader<C> {
                     client,
                     self_encryptor,
                 })
-            }).into_box()
+            })
+            .into_box()
     }
 
     /// Returns the total size of the file/blob.

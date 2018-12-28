@@ -70,7 +70,7 @@
 #![doc(
     html_logo_url = "https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png",
     html_favicon_url = "http://maidsafe.net/img/favicon.ico",
-    test(attr(forbid(warnings))),
+    test(attr(forbid(warnings)))
 )]
 // For explanation of lint checks, run `rustc -W help` or see
 // https://github.
@@ -90,8 +90,6 @@
     non_shorthand_field_patterns,
     overflowing_literals,
     plugin_as_library,
-    private_no_mangle_fns,
-    private_no_mangle_statics,
     stable_features,
     unconditional_recursion,
     unknown_lints,
@@ -118,19 +116,13 @@
     missing_debug_implementations,
     variant_size_differences
 )]
-#![cfg_attr(
-    feature = "cargo-clippy",
-    deny(
-        clippy,
-        unicode_not_nfc,
-        wrong_pub_self_convention,
-        option_unwrap_used
-    )
+#![deny(
+    clippy::all,
+    clippy::unicode_not_nfc,
+    clippy::wrong_pub_self_convention,
+    clippy::option_unwrap_used
 )]
-#![cfg_attr(
-    feature = "cargo-clippy",
-    allow(implicit_hasher, too_many_arguments, use_debug)
-)]
+#![allow(clippy::implicit_hasher, clippy::too_many_arguments, clippy::use_debug)]
 
 extern crate chrono;
 extern crate config_file_handler;

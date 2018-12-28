@@ -40,14 +40,16 @@ where
             let value = parent.enc_entry_value(&encoded)?;
 
             Ok((key, value))
-        }).into_future()
+        })
+        .into_future()
         .and_then(move |(key, value)| {
             client.mutate_mdata_entries(
                 parent.name,
                 parent.type_tag,
                 EntryActions::new().ins(key, value, 0).into(),
             )
-        }).map_err(From::from)
+        })
+        .map_err(From::from)
         .into_box()
 }
 
@@ -63,11 +65,13 @@ where
             client
                 .get_mdata_value(parent.name, parent.type_tag, key)
                 .map(move |value| (value, parent))
-        }).and_then(move |(value, parent)| {
+        })
+        .and_then(move |(value, parent)| {
             let plaintext = parent.decrypt(&value.content)?;
             let file = deserialise(&plaintext)?;
             Ok((value.entry_version, file))
-        }).map_err(convert_error)
+        })
+        .map_err(convert_error)
         .into_box()
 }
 
@@ -92,7 +96,7 @@ pub fn read<C: Client>(
 /// that version incremented by one is then used as the actual version.
 // Allow pass by value for consistency with other functions.
 #[allow(unknown_lints)]
-#[allow(needless_pass_by_value)]
+#[allow(clippy::needless_pass_by_value)]
 pub fn delete<S>(
     client: impl Client,
     parent: MDataInfo,
@@ -113,17 +117,21 @@ where
             .map(move |value| (value.entry_version + 1))
             .into_box(),
         Version::Custom(version) => ok!(version),
-    }.map_err(NfsError::from);
+    }
+    .map_err(NfsError::from);
 
-    version_fut.and_then(move |version| {
-        client
-            .mutate_mdata_entries(
-                parent.name,
-                parent.type_tag,
-                EntryActions::new().del(key, version).into(),
-            ).map(move |()| version)
-            .map_err(convert_error)
-    }).into_box()
+    version_fut
+        .and_then(move |version| {
+            client
+                .mutate_mdata_entries(
+                    parent.name,
+                    parent.type_tag,
+                    EntryActions::new().del(key, version).into(),
+                )
+                .map(move |()| version)
+                .map_err(convert_error)
+        })
+        .into_box()
 }
 
 /// Update the file.
@@ -152,21 +160,25 @@ where
             let content = parent.enc_entry_value(&encoded)?;
 
             Ok((key, content))
-        }).into_future()
+        })
+        .into_future()
         .and_then(move |(key, content)| match version {
             Version::GetNext => client
                 .get_mdata_value(parent.name, parent.type_tag, key.clone())
                 .map(move |value| (key, content, value.entry_version + 1, parent))
                 .into_box(),
             Version::Custom(version) => ok!((key, content, version, parent)),
-        }).and_then(move |(key, content, version, parent)| {
+        })
+        .and_then(move |(key, content, version, parent)| {
             client2
                 .mutate_mdata_entries(
                     parent.name,
                     parent.type_tag,
                     EntryActions::new().update(key, content, version).into(),
-                ).map(move |()| version)
-        }).map_err(convert_error)
+                )
+                .map(move |()| version)
+        })
+        .map_err(convert_error)
         .into_box()
 }
 

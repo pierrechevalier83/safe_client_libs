@@ -124,6 +124,7 @@ fn immutable_data_basics() {
 
 // Test the basic mdata operations.
 #[test]
+#[allow(clippy::cyclomatic_complexity)]
 fn mutable_data_basics() {
     let (mut routing, routing_rx, full_id) = setup();
 
@@ -219,15 +220,15 @@ fn mutable_data_basics() {
     let value1_v0 = unwrap!(utils::generate_random_vector(10));
 
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Ins(Value {
-                content: value0_v0.clone(),
-                entry_version: 0,
-            }),
-            key1.to_vec() => EntryAction::Ins(Value {
-                content: value1_v0.clone(),
-                entry_version: 0,
-            })
-        ];
+        key0.to_vec() => EntryAction::Ins(Value {
+            content: value0_v0.clone(),
+            entry_version: 0,
+        }),
+        key1.to_vec() => EntryAction::Ins(Value {
+            content: value1_v0.clone(),
+            entry_version: 0,
+        })
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
@@ -289,16 +290,16 @@ fn mutable_data_basics() {
     let value0_v1 = unwrap!(utils::generate_random_vector(10));
     let value2_v0 = unwrap!(utils::generate_random_vector(10));
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Update(Value {
-                content: value0_v1.clone(),
-                entry_version: 1,
-            }),
-            key1.to_vec() => EntryAction::Del(1),
-            key2.to_vec() => EntryAction::Ins(Value {
-                content: value2_v0.clone(),
-                entry_version: 0,
-            })
-        ];
+        key0.to_vec() => EntryAction::Update(Value {
+            content: value0_v1.clone(),
+            entry_version: 1,
+        }),
+        key1.to_vec() => EntryAction::Del(1),
+        key2.to_vec() => EntryAction::Ins(Value {
+            content: value2_v0.clone(),
+            entry_version: 0,
+        })
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
@@ -357,30 +358,30 @@ fn mutable_data_reclaim() {
     let key0 = b"key0";
     let value0 = unwrap!(utils::generate_random_vector(10));
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Ins(Value {
-                content: value0.clone(),
-                entry_version: 0,
-            }),
-        ];
+        key0.to_vec() => EntryAction::Ins(Value {
+            content: value0.clone(),
+            entry_version: 0,
+        }),
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
     expect_success!(routing_rx, msg_id, Response::MutateMDataEntries);
 
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Del(1),
-        ];
+        key0.to_vec() => EntryAction::Del(1),
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
     expect_success!(routing_rx, msg_id, Response::MutateMDataEntries);
 
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Update(Value {
-                content: value0.clone(),
-                entry_version: 2,
-            })
-        ];
+        key0.to_vec() => EntryAction::Update(Value {
+            content: value0.clone(),
+            entry_version: 2,
+        })
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
@@ -394,8 +395,8 @@ fn mutable_data_reclaim() {
 
     // Try deleting the entry with an invalid entry_version and make sure it fails
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Del(4),
-        ];
+        key0.to_vec() => EntryAction::Del(4),
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(client_mgr, name, tag, actions, msg_id, owner_key,));
@@ -524,6 +525,7 @@ fn mutable_data_entry_versioning() {
 
 // Test various operations with and without proper permissions.
 #[test]
+#[allow(clippy::cyclomatic_complexity)]
 fn mutable_data_permissions() {
     let (mut routing, routing_rx, full_id) = setup();
 
@@ -1011,6 +1013,7 @@ fn mutable_data_ownership() {
 
 // Test auth key operations with valid and invalid version bumps.
 #[test]
+#[allow(clippy::cyclomatic_complexity)]
 fn auth_keys() {
     let (mut routing, routing_rx, full_id) = setup();
     let owner_key = *full_id.public_id().signing_public_key();
@@ -1260,9 +1263,7 @@ fn request_hooks() {
         match *req {
             Request::PutMData {
                 ref data, msg_id, ..
-            }
-                if data.tag() == 10_000u64 =>
-            {
+            } if data.tag() == 10_000u64 => {
                 // Send an OK response but don't put data on the mock vault
                 Some(Response::PutMData {
                     res: Ok(()),
@@ -1333,11 +1334,11 @@ fn request_hooks() {
     let value0_v0 = unwrap!(utils::generate_random_vector(10));
 
     let actions = btree_map![
-            key0.to_vec() => EntryAction::Ins(Value {
-                content: value0_v0.clone(),
-                entry_version: 0,
-            })
-        ];
+        key0.to_vec() => EntryAction::Ins(Value {
+            content: value0_v0.clone(),
+            entry_version: 0,
+        })
+    ];
 
     let msg_id = MessageId::new();
     unwrap!(routing.mutate_mdata_entries(

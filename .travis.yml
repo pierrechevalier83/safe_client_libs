@@ -5,7 +5,7 @@ env:
     - PATH=$PATH:$HOME/.cargo/bin
 language: rust
 rust:
-  - 1.29.1
+  - stable
 stages:
   - warmup
   - tests
@@ -39,11 +39,10 @@ jobs:
     - stage: tests
       script: set -x; scripts/test-mock && scripts/test-integration
       os: osx
-    # Temporarily disable clippy
-    # - stage: tests
-    #   script: set -x; scripts/clippy-all
-    #   if: type = pull_request
-    #   os: linux
+    - stage: tests
+      script: set -x; scripts/clippy-all
+      if: type = pull_request
+      os: linux
 
     # Build tests for binary compatibility
     - stage: tests-binary-compat
