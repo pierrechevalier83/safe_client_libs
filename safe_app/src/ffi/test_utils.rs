@@ -68,7 +68,7 @@ pub unsafe extern "C" fn test_simulate_network_disconnect(
     user_data: *mut c_void,
     o_cb: extern "C" fn(user_data: *mut c_void, result: *const FfiResult),
 ) {
-    use ffi::helper::send_sync;
+    use crate::ffi::helper::send_sync;
     use safe_core::Client;
 
     catch_unwind_cb(user_data, o_cb, || {
@@ -120,7 +120,7 @@ mod tests {
         use safe_core::utils;
         use std::sync::mpsc;
         use std::time::Duration;
-        use test_utils::create_auth_req;
+        use crate::test_utils::create_auth_req;
 
         let app_id = unwrap!(utils::generate_random_string(10));
         let auth_req = create_auth_req(Some(app_id), None);
