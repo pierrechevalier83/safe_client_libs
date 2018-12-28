@@ -8,8 +8,8 @@
 
 use super::routing::Routing;
 use super::DEFAULT_MAX_MUTATIONS;
-use client::mock::vault::Vault;
-use config_handler::{Config, DevConfig};
+use crate::client::mock::vault::Vault;
+use crate::config_handler::{Config, DevConfig};
 use rand;
 use routing::{
     AccountInfo, Action, Authority, ClientError, EntryAction, EntryActions, Event, FullId,
@@ -21,7 +21,7 @@ use std::sync::mpsc::{self, Receiver};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tiny_keccak::sha3_256;
-use utils;
+use crate::utils;
 
 // Helper macro to receive a routing event and assert it's a response
 // success.

@@ -458,7 +458,7 @@ mod tests_with_mock_routing {
     use rand;
     use routing::{Action, EntryActions, MutableData};
     use rust_sodium::crypto::sign;
-    use utils::test_utils::random_client;
+    use crate::utils::test_utils::random_client;
 
     // Test putting mdata and recovering from errors
     #[test]

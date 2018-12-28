@@ -7,7 +7,7 @@
 // permissions and limitations relating to use of the SAFE Network Software.
 
 #[cfg(feature = "use-mock-routing")]
-use client::mock::Routing;
+use crate::client::mock::Routing;
 #[cfg(not(feature = "use-mock-routing"))]
 use routing::Client as Routing;
 
