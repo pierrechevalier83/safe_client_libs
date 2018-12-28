@@ -10,13 +10,13 @@
 
 #![cfg(feature = "use-mock-routing")]
 
-use access_container;
-use app_auth::{self, AppState};
-use client::AuthClient;
-use config;
+use crate::access_container;
+use crate::app_auth::{self, AppState};
+use crate::client::AuthClient;
+use crate::config;
 use futures::{future, Future};
 use rand::{Rng, SeedableRng, XorShiftRng};
-use revocation;
+use crate::revocation;
 use safe_core::config_handler;
 use safe_core::ipc::req::ContainerPermissions;
 use safe_core::ipc::{AccessContainerEntry, AppExchangeInfo, AuthReq, Permission};
@@ -25,10 +25,10 @@ use safe_core::{Client, FutureExt, MDataInfo};
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use std_dirs::{DEFAULT_PRIVATE_DIRS, DEFAULT_PUBLIC_DIRS};
-use AuthError;
-use AuthFuture;
-use Authenticator;
+use crate::std_dirs::{DEFAULT_PRIVATE_DIRS, DEFAULT_PUBLIC_DIRS};
+use crate::AuthError;
+use crate::AuthFuture;
+use crate::Authenticator;
 
 #[test]
 #[ignore]

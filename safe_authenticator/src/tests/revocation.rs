@@ -26,11 +26,11 @@ use crate::Authenticator;
 #[cfg(feature = "use-mock-routing")]
 mod mock_routing {
     use super::*;
-    use access_container;
-    use app_auth::{app_state, AppState};
-    use client::AuthClient;
-    use config;
-    use ffi::ipc::auth_flush_app_revocation_queue;
+    use crate::access_container;
+    use crate::app_auth::{app_state, AppState};
+    use crate::client::AuthClient;
+    use crate::config;
+    use crate::ffi::ipc::auth_flush_app_revocation_queue;
     use ffi_utils::test_utils::call_0;
     use futures::future;
     use maidsafe_utilities::SeededRng;
@@ -45,9 +45,9 @@ mod mock_routing {
     use std::iter;
     use std::sync::{Arc, Barrier};
     use std::thread;
-    use test_utils::{get_container_from_authenticator_entry, register_rand_app, try_revoke};
+    use crate::test_utils::{get_container_from_authenticator_entry, register_rand_app, try_revoke};
     use tiny_keccak::sha3_256;
-    use AuthFuture;
+    use crate::AuthFuture;
 
     // Test operation recovery for app revocation
     //

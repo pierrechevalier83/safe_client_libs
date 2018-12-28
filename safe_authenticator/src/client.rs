@@ -758,7 +758,7 @@ mod tests {
         use maidsafe_utilities::thread;
         use safe_core::NetworkEvent;
         use std::sync::mpsc;
-        use test_utils::random_client_with_net_obs;
+        use crate::test_utils::random_client_with_net_obs;
 
         let (tx, rx) = mpsc::channel();
         let (hook, keep_alive) = futures::oneshot();
@@ -792,7 +792,7 @@ mod tests {
         use rand;
         use routing::ImmutableData;
         use std::time::Duration;
-        use test_utils::random_client;
+        use crate::test_utils::random_client;
 
         // Get
         random_client(|client| {

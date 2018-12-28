@@ -38,17 +38,17 @@ use tiny_keccak::sha3_256;
 #[cfg(feature = "use-mock-routing")]
 mod mock_routing {
     use super::utils;
-    use access_container as access_container_tools;
-    use errors::AuthError;
+    use crate::access_container as access_container_tools;
+    use crate::errors::AuthError;
     use futures::Future;
     use routing::{ClientError, Request, Response, User};
     use safe_core::ipc::AuthReq;
     use safe_core::nfs::NfsError;
     use safe_core::utils::generate_random_string;
     use safe_core::{app_container_name, Client, CoreError, MockRouting};
-    use std_dirs::{DEFAULT_PRIVATE_DIRS, DEFAULT_PUBLIC_DIRS};
-    use test_utils;
-    use Authenticator;
+    use crate::std_dirs::{DEFAULT_PRIVATE_DIRS, DEFAULT_PUBLIC_DIRS};
+    use crate::test_utils;
+    use crate::Authenticator;
 
     // Test operation recovery for std dirs creation.
     // 1. Try to create a new user's account using `safe_authenticator::Authenticator::create_acc`
